@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 // this is an example controller feel free to delete this once you have created your own.
 @RestController
 @RequestMapping("/")
-public class HelloController {
+public class elloController {
     @Autowired
     HelloService helloService;
     @GetMapping
