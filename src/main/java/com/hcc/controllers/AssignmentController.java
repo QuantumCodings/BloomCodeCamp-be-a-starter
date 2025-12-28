@@ -1,44 +1,38 @@
 package com.hcc.controllers;
 
 import com.hcc.entities.Assignment;
-import com.hcc.model.AssignmentResponseDto;
 import com.hcc.services.AssignmentService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/assignments")
-@RequiredArgsConstructor
+@RequestMapping("/api/assignments")
 public class AssignmentController {
 
-    private final AssignmentService assignmentService;
+    @Autowired
+    private AssignmentService assignmentService;
 
     @GetMapping
-    public List<AssignmentResponseDto> fetchUserAssignments() {
-        return assignmentService.getAssignmentsByUser();
+    public List<Assignment> getAssignmentsByUser(@AuthenticationPrincipal UserDetails userDetails) {
+        return assignmentService.getAssignmentsByUser(userDetails.getUsername());
     }
 
-    @GetMapping("/{assignmentId}")
-    public AssignmentResponseDto fetchAssignmentById(
-            @PathVariable Long assignmentId) {
-        return assignmentService.getAssignmentById(assignmentId);
+    @GetMapping("/{id}")
+    public Assignment getAssignmentById(@PathVariable Long id) {
+        return assignmentService.getAssignmentById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Assignment updateAssignment(@PathVariable Long id, @RequestBody Assignment assignment) {
+        return assignmentService.updateAssignment(id, assignment);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Assignment createAssignment(
-            @RequestBody Assignment assignment) {
-        return assignmentService.addAssignment(assignment);
-    }
-
-    @PutMapping("/{assignmentId}")
-    public AssignmentResponseDto updateAssignment(
-            @PathVariable Long assignmentId,
-            @RequestBody Assignment assignment) {
-        return assignmentService.updateAssignment(assignment, assignmentId);
+    public Assignment createAssignment(@RequestBody Assignment assignment) {
+        return assignmentService.createAssignment(assignment);
     }
 }

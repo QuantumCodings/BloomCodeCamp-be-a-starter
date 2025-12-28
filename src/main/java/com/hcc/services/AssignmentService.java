@@ -1,55 +1,44 @@
 package com.hcc.services;
 
 import com.hcc.entities.Assignment;
-import com.hcc.model.AssignmentResponseDto;
+import com.hcc.entities.User;
 import com.hcc.repositories.AssignmentRepository;
+import com.hcc.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AssignmentService {
 
     @Autowired
-    AssignmentRepository assignmentRepository;
+    private AssignmentRepository assignmentRepo;
 
-    public AssignmentResponseDto getAssignmentById(Long id) {
-        Assignment assignmentEntity = assignmentRepository.findFirstById(id);
-        return AssignmentResponseDto.builder()
-                .withId(assignmentEntity.getId())
-                .withGithubUrl(assignmentEntity.getGithubUrl())
-                .build();
+    @Autowired
+    private UserRepository userRepo;
+
+    public List<Assignment> getAssignmentsByUser(String username) {
+        Optional<User> userOpt = userRepo.findByUsername(username);
+        return userOpt.map(assignmentRepo::findByUser).orElse(List.of());
     }
 
-    public List<AssignmentResponseDto> getAssignmentsByUser() {
-        List<Assignment> assignmentEntities = assignmentRepository.findAll();
-        List<AssignmentResponseDto> assignmentResponseDtoList = new ArrayList<>();
-
-        for (Assignment assignmentEntity : assignmentEntities) {
-            assignmentResponseDtoList.add(AssignmentResponseDto.builder()
-                    .withUser(assignmentEntity.getUser())
-                    .withGithubUrl(assignmentEntity.getGithubUrl())
-                    .build());
-        }
-        return assignmentResponseDtoList;
+    public Assignment getAssignmentById(Long id) {
+        return assignmentRepo.findById(id).orElseThrow(() -> new RuntimeException("Assignment not found"));
     }
 
-    public Assignment addAssignment (Assignment newAssignment) {
-        return assignmentRepository.save(newAssignment);
+    public Assignment updateAssignment(Long id, Assignment updatedAssignment) {
+        Assignment assignment = getAssignmentById(id);
+        assignment.setStatus(updatedAssignment.getStatus());
+        assignment.setGithubUrl(updatedAssignment.getGithubUrl());
+        assignment.setBranch(updatedAssignment.getBranch());
+        assignment.setReviewVideoUrl(updatedAssignment.getReviewVideoUrl());
+        assignment.setCodeReviewer(updatedAssignment.getCodeReviewer());
+        return assignmentRepo.save(assignment);
     }
 
-    public AssignmentResponseDto updateAssignment (Assignment assignment, Long id) {
-        Assignment assignmentEntity = assignmentRepository.findFirstById(id);
-        assignmentEntity.setBranch(assignment.getBranch());
-        assignmentEntity.setCodeReviewer(assignment.getCodeReviewer());
-        assignmentEntity.setStatus(assignment.getStatus());
-
-        return AssignmentResponseDto.builder()
-                .withId(assignmentEntity.getId())
-                .withGithubUrl(assignmentEntity.getGithubUrl())
-                .build();
+    public Assignment createAssignment(Assignment assignment) {
+        return assignmentRepo.save(assignment);
     }
 }

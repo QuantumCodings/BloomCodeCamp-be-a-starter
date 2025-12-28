@@ -1,10 +1,16 @@
 package com.hcc.entities;
 
+import com.hcc.enums.AuthorityEnum;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
+@Setter
+@Getter
 @Entity
+@Table(name = "authorities")
 public class Authority implements GrantedAuthority {
 
     @Id
@@ -23,8 +29,7 @@ public class Authority implements GrantedAuthority {
         this.authority = authority;
     }
 
-    @Override
-    public String getAuthority() {
-        return authority;
+    public Authority(String name, User learner) {
+
     }
 }

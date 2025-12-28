@@ -1,7 +1,9 @@
 package com.hcc.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
 
+@Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum AssignmentStatusEnum {
     PENDING_SUBMISSION("Pending Submission", 1),
@@ -11,19 +13,12 @@ public enum AssignmentStatusEnum {
     COMPLETED("Completed", 5),
     RESUBMITTED("Resubmitted", 6);
 
-    private String status;
-    private Integer step;
+    private final String status;
+    private final Integer step;
 
     AssignmentStatusEnum(String status, Integer step) {
         this.status = status;
         this.step = step;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public Integer getStep() {
-        return step;
-    }
 }

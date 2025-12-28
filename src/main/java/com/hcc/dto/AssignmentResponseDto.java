@@ -1,71 +1,22 @@
 package com.hcc.dto;
 
-import com.hcc.entities.User;
+import com.hcc.entities.Assignment;
+import com.hcc.enums.AssignmentEnum;
+import com.hcc.enums.AssignmentStatusEnum;
+import lombok.Getter;
+import lombok.Setter;
 
 public class AssignmentResponseDto {
+    @Setter
+    @Getter
+    private Assignment assignment;
+    @Getter
+    private final AssignmentEnum[] assignmentEnums = AssignmentEnum.values();
+    private final AssignmentStatusEnum[] statusEnums = AssignmentStatusEnum.values();
 
-    private Long id;
-    private Integer number;
-    private User user;
-    private String githubUrl;
-
-    private AssignmentResponseDto() {
-        // private constructor
+    public AssignmentResponseDto(Assignment assignment) {
+        this.assignment = assignment;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public String getGithubUrl() {
-        return githubUrl;
-    }
-
-    public static AssignmentResponseDtoBuilder builder() {
-        return new AssignmentResponseDtoBuilder();
-    }
-
-    public static class AssignmentResponseDtoBuilder {
-        private Long id;
-        private Integer number;
-        private User user;
-        private String githubUrl;
-
-        public AssignmentResponseDtoBuilder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public AssignmentResponseDtoBuilder number(Integer number) {
-            this.number = number;
-            return this;
-        }
-
-        public AssignmentResponseDtoBuilder user(User user) {
-            this.user = user;
-            return this;
-        }
-
-        public AssignmentResponseDtoBuilder githubUrl(String githubUrl) {
-            this.githubUrl = githubUrl;
-            return this;
-        }
-
-        public AssignmentResponseDto build() {
-            AssignmentResponseDto dto = new AssignmentResponseDto();
-            dto.id = this.id;
-            dto.number = this.number;
-            dto.user = this.user;
-            dto.githubUrl = this.githubUrl;
-            return dto;
-        }
-    }
+    public AssignmentStatusEnum[] getAssignmentStatusEnums() { return statusEnums; }
 }
